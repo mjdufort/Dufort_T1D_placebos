@@ -32,7 +32,6 @@ library(miscHelpers)
 
 ##### load/save data from previous scripts #####
 
-# load data from previous CBC data processing
 load(file="T1D_placebos_data_1_for_downstream_analyses.RData")
 
 
@@ -349,5 +348,3 @@ save(file="T1D_placebos_data_2_for_downstream_analyses.RData",
      list=c(
        "master.cbc.merged", "master.cbc.merged.filtered_cbcs", "counts.filtered_cbcs",
        "counts.final", "auc2hr_models.all", "cbc_models.all", "vwts.all"))
-
-
