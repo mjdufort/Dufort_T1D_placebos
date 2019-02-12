@@ -1,4 +1,4 @@
-## scripts to load and do QC on RNAseq and cpeptide data for the T1D placebos project
+## scripts to load and analyze C-peptide data, and load RNAseq data for the T1D placebos project
 
 ##### set up environment: load packages #####
 
@@ -28,6 +28,24 @@ library(RNAseQC)
 library(countSubsetNorm)
 library(miscHelpers)
 library(geneSetTools)
+
+
+##### import detailed study schedules, with visit numbers, names, corrected weeks, etc. #####
+
+study_schedules <-
+  read_xlsx(
+    path="T1D_trials_info/T1D_trial_placebos_schedule_aggregated.xlsx",
+    sheet=1) %>%
+  standardize_dimnames()
+for (
+  i in colnames(study_schedules)[
+    !(colnames(study_schedules) %in% c("study", "notes")) &
+    !str_detect(colnames(study_schedules), "name|scheduled")]) {
+  if (is.character(study_schedules[[i]]))
+    study_schedules[[i]] <- study_schedules[[i]] %>%
+      str_replace_all("<0", "NA") %>%
+      as.numeric()
+}
 
 
 ##### load patient and clinical data #####
@@ -328,6 +346,55 @@ for (i in 1:nrow(master)) {
   }
 }
 
+
+##### plot C-peptide rate vs. age by study #####
+
+## plot C-peptide rate vs. age for each study, with gray dots for other other studies, with smooth for each study
+for (i in sort(unique(master$study))) {
+  name.tmp <-
+    switch(
+      i,
+      "ABATE"="Teplizumab",
+      "START"="ATG",
+      "T1DAL"="Alefacept",
+      "TN02"="MMF / Daclizumab",
+      "TN05"="Rituximab",
+      "TN09"="Abatacept")
+  pdf(
+    paste0("Fig_S3_", i, ".pdf"),
+    w=9, h=6)
+  print(
+    ggplot(
+      mapping=aes(
+        x=age_years, y=log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept)) +
+      geom_point(
+        data=master[!duplicated(master$participant_id) & master$study!=i,],
+        color="gray60",
+        size=2) +
+      lims(
+        x=range(master$age_years, na.rm=TRUE),
+        y=range(master$log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept, na.rm=TRUE)) +
+      geom_smooth(
+        # data=master[!duplicated(master$participant_id),],
+        data=master[!duplicated(master$participant_id) & master$study==i,],
+        color="black", se=FALSE, linetype="dashed",
+        method="lm", formula= y~I(log(x)),
+        size=1) +
+      geom_point(
+        data=master[!duplicated(master$participant_id) & master$study==i,],
+        color="black",
+        size=5) +
+      # labs(title=name.tmp, x="Age at diagnosis", y="Rate of C-peptide change"))
+      labs(title=NULL, x=NULL, y=NULL) +
+      geom_text(
+        mapping=aes(label=study),
+        data=data.frame(
+          age_years=45,
+          log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept=-3,
+          study=name.tmp),
+        size=12, hjust=1))
+  dev.off()
+}
 
 ##### split subjects into fast and slow progressors #####
 
@@ -1444,10 +1511,10 @@ rm_tmp(ask=FALSE)
 
 ##### save objects for downstream use #####
 
-## save objects for any downstream limma and WGCNA analyses
 save(file="T1D_placebos_data_1_for_downstream_analyses.RData",
      list=c(
        "patient_data.merged", "patient_data.by_study",
+       "study_schedules",
        "cbc.merged",
        "cpeptide_data.merged",
        "rnaseq_annotation.merged",
