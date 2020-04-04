@@ -1,0 +1,155 @@
+"study","participant_id","age_years","sex","race","ethnicity","diagnosis_study_day","hla_risk_category_winkler_2014","baseline_hba1c"
+"ABATE","ABATE_001010",14.376454483,"M",NA,"Not Hispanic or Latino",-43,4,8
+"ABATE","ABATE_002001",8.5256673511,"M",NA,"Not Hispanic or Latino",-59,1,8
+"ABATE","ABATE_002004",12.147843943,"F",NA,"Not Hispanic or Latino",-48,1,7.9
+"ABATE","ABATE_002008",9.8617385352,"F",NA,"Not Hispanic or Latino",-48,6,6.5
+"ABATE","ABATE_002012",12.396988364,"F",NA,"Not Hispanic or Latino",-55,NA,7.4
+"ABATE","ABATE_002018",15.4770705,"F",NA,"Not Hispanic or Latino",-63,1,7.7
+"ABATE","ABATE_002019",9.9986310746,"M",NA,"Not Hispanic or Latino",-43,1,8.2
+"ABATE","ABATE_003003",13.163586585,"M",NA,"Not Hispanic or Latino",-51,6,6.4
+"ABATE","ABATE_003005",17.015742642,"M",NA,"Not Hispanic or Latino",-56,3,6.3
+"ABATE","ABATE_003006",17.04312115,"M",NA,"Not Hispanic or Latino",-55,1,6.8
+"ABATE","ABATE_003012",9.2977412731,"M",NA,"Hispanic or Latino",-56,6,7.5
+"ABATE","ABATE_003018",8.5037645448,"F",NA,"Hispanic or Latino",-59,NA,8.6
+"ABATE","ABATE_003020",10.718685832,"M",NA,"Not Hispanic or Latino",-51,NA,NA
+"ABATE","ABATE_004001",13.199178645,"M",NA,"Not Hispanic or Latino",NA,NA,NA
+"ABATE","ABATE_004005",11.37303217,"M",NA,"Not Hispanic or Latino",-46,1,8.8
+"ABATE","ABATE_004008",9.0622861054,"M",NA,"Not Hispanic or Latino",-29,1,8.4
+"ABATE","ABATE_005001",15.685147159,"F",NA,"Not Hispanic or Latino",-40,5,11.1
+"ABATE","ABATE_005006",17.434633812,"M",NA,"Not Hispanic or Latino",-42,4,6.1
+"ABATE","ABATE_005007",25.864476386,"F",NA,"Not Hispanic or Latino",-42,2,7.5
+"ABATE","ABATE_006001",17.284052019,"M",NA,"Not Hispanic or Latino",-66,6,7.2
+"ABATE","ABATE_006003",9.9466119097,"F",NA,"Not Hispanic or Latino",-56,NA,6.5
+"ABATE","ABATE_007004",10.461327858,"M",NA,"Not Hispanic or Latino",-35,6,10.6
+"ABATE","ABATE_007005",11.953456537,"M",NA,"Not Hispanic or Latino",-47,3,6.4
+"ABATE","ABATE_007006",13.262149213,"M",NA,"Not Hispanic or Latino",-52,NA,7.8
+"ABATE","ABATE_007012",8.8186173854,"M",NA,"Not Hispanic or Latino",-52,3,7.4
+"ABATE","ABATE_007015",16.084873374,"M",NA,"Not Hispanic or Latino",NA,NA,NA
+"ABATE","ABATE_007019",9.3689253936,"F",NA,"Not Hispanic or Latino",-47,6,7.7
+"START","START_001001",34,"M","White","Not Hispanic or Latino",-54,NA,7.6
+"START","START_001005",18,"F","White","Not Hispanic or Latino",-91,NA,7.4
+"START","START_002003",33,"M","White","Hispanic or Latino",-46,NA,7.4
+"START","START_002007",14,"M","White","Not Hispanic or Latino",-99,NA,4.9
+"START","START_002010",28,"F","White","Not Hispanic or Latino",-85,NA,6.6
+"START","START_002012",28,"F","White","Not Hispanic or Latino",-68,NA,6.4
+"START","START_002018",14,"F","White","Not Hispanic or Latino",-41,NA,6.6
+"START","START_002019",19,"F","Asian; White","Not Hispanic or Latino",-98,NA,5.7
+"START","START_003004",22,"M","White","Not Hispanic or Latino",-74,NA,6.7
+"START","START_003007",26,"M","White","Hispanic or Latino",-72,NA,6.1
+"START","START_003011",16,"M","White","Hispanic or Latino",-89,NA,5.7
+"START","START_003014",15,"M","White","Not Hispanic or Latino",-83,1,7.1
+"START","START_008003",17,"M","White","Hispanic or Latino",-98,NA,5.6
+"START","START_008008",12,"F","White","Not Hispanic or Latino",-88,1,7.8
+"START","START_009001",28,"F","White","Not Hispanic or Latino",-50,NA,8.7
+"START","START_010005",16,"F","White","Hispanic or Latino",-94,1,5.9
+"START","START_013003",17,"M","White","Not Hispanic or Latino",-61,NA,6.5
+"START","START_013005",12,"F","Black or African American","Not Hispanic or Latino",-73,NA,7.4
+"START","START_013007",26,"M","White","Not Hispanic or Latino",-85,1,5.5
+"START","START_013010",14,"M","Black or African American","Not Hispanic or Latino",-81,NA,10.2
+"T1DAL","T1DAL_00110202",16,"F",NA,"Not Hispanic or Latino",-45,1,10.3
+"T1DAL","T1DAL_00210551",19,"M",NA,"Not Hispanic or Latino",-81,1,7.5
+"T1DAL","T1DAL_00410087",23,"M",NA,"Not Hispanic or Latino",-94,1,5.5
+"T1DAL","T1DAL_00610411",13,"M",NA,"Not Hispanic or Latino",-86,NA,7.5
+"T1DAL","T1DAL_00910098",24,"M",NA,"Not Hispanic or Latino",-100,NA,NA
+"T1DAL","T1DAL_00910199",27,"M",NA,"Not Hispanic or Latino",-38,1,15.2
+"T1DAL","T1DAL_00910529",22,"F",NA,"Not Hispanic or Latino",-47,NA,NA
+"T1DAL","T1DAL_01010340",28,"M",NA,"Unknown",-53,1,11
+"T1DAL","T1DAL_01010608",15,"M",NA,"Not Hispanic or Latino",-61,1,7
+"T1DAL","T1DAL_01110590",14,"M",NA,"Not Hispanic or Latino",-50,2,7.6
+"T1DAL","T1DAL_01410379",23,"M",NA,"Not Hispanic or Latino",-96,1,NA
+"T1DAL","T1DAL_01510142",32,"M",NA,"Not Hispanic or Latino",-86,1,7.3
+"T1DAL","T1DAL_01710433",13,"M",NA,"Not Hispanic or Latino",-99,NA,7.4
+"T1DAL","T1DAL_01710475",14,"F",NA,"Not Hispanic or Latino",-56,1,8.8
+"T1DAL","T1DAL_01710726",13,"F",NA,"Not Hispanic or Latino",-36,2,8.8
+"T1DAL","T1DAL_02010368",16,"M",NA,"Not Hispanic or Latino",-77,NA,NA
+"TN02","TN02_9013178",20.8082191780822,"M","White","Not Hispanic or Latino",-130,1,6.1
+"TN02","TN02_9075533",12.3178082191781,"M","White","Not Hispanic or Latino",-68,6,8
+"TN02","TN02_9057024",12.8575342465753,"M","White","Not Hispanic or Latino",-61,1,8.5
+"TN02","TN02_9066885",16.358904109589,"F","White","Not Hispanic or Latino",-72,6,7.4
+"TN02","TN02_9016861",10.6493150684932,"F","White","Not Hispanic or Latino",-80,1,6.5
+"TN02","TN02_9079286",9.6986301369863,"M","White","Hispanic or Latino",-109,1,7
+"TN02","TN02_9052681",15.3835616438356,"M","White","Not Hispanic or Latino",-55,3,9.5
+"TN02","TN02_9053642",34.8301369863014,"M","White","Not Hispanic or Latino",-78,2,9.4
+"TN02","TN02_9054059",13.5315068493151,"F","White","Not Hispanic or Latino",-77,1,9.4
+"TN02","TN02_9065086",14.3808219178082,"M","White","Not Hispanic or Latino",-72,2,6.9
+"TN02","TN02_9065329",19.5315068493151,"M","Asian","Not Hispanic or Latino",-49,2,8.9
+"TN02","TN02_9053329",23.6931506849315,"M","White","Not Hispanic or Latino",-73,3,8.5
+"TN02","TN02_9019151",25.1424657534247,"F","White","Not Hispanic or Latino",-90,3,7.1
+"TN02","TN02_9019475",43.7369863013699,"M","White","Not Hispanic or Latino",-99,3,5.1
+"TN02","TN02_9081451",21.7013698630137,"F","White","Not Hispanic or Latino",-78,1,7.6
+"TN02","TN02_9081777",12.1890410958904,"M","White","Not Hispanic or Latino",-86,3,12.2
+"TN02","TN02_9064544",13.9342465753425,"M","White","Not Hispanic or Latino",-49,3,9.6
+"TN02","TN02_9063227",27.6191780821918,"M","Other","Not Hispanic or Latino",-57,3,9
+"TN02","TN02_9071282",14.9150684931507,"M","White","Not Hispanic or Latino",-97,6,8.5
+"TN02","TN02_9041386",10.041095890411,"M","White","Hispanic or Latino",-76,1,11.1
+"TN02","TN02_9098713",12.0630136986301,"M","White","Not Hispanic or Latino",-102,2,6.1
+"TN02","TN02_9015338",13.6876712328767,"F","White","Not Hispanic or Latino",-73,3,10.9
+"TN02","TN02_9015755",13.5342465753425,"F","White","Not Hispanic or Latino",-76,3,6.4
+"TN02","TN02_9076280",15.1945205479452,"M","White","Not Hispanic or Latino",-54,3,9
+"TN02","TN02_9076428",12.9123287671233,"M","White","Not Hispanic or Latino",-87,5,5.2
+"TN02","TN02_9025240",32.2,"M","White","Not Hispanic or Latino",-68,3,9.3
+"TN02","TN02_9025380",9.95890410958904,"F","White","Not Hispanic or Latino",-79,3,7.1
+"TN02","TN02_9001542",46.158904109589,"F","White","Not Hispanic or Latino",-45,6,8.6
+"TN02","TN02_9058753",13.8739726027397,"F","White","Not Hispanic or Latino",-91,1,6.7
+"TN02","TN02_9068868",22.7315068493151,"M","White","Not Hispanic or Latino",-98,3,5.6
+"TN02","TN02_9001825",13.4219178082192,"F","White","Not Hispanic or Latino",-91,3,6.4
+"TN02","TN02_9043986",12.2547945205479,"M","White","Not Hispanic or Latino",-99,3,6.5
+"TN02","TN02_9028156",9.46849315068493,"M","White","Not Hispanic or Latino",-96,1,6.4
+"TN02","TN02_9028256",23.8821917808219,"F","White","Not Hispanic or Latino",-90,6,8.3
+"TN02","TN02_9040657",9.78630136986301,"M","Other","Hispanic or Latino",-90,1,8
+"TN02","TN02_9098296",13.3452054794521,"F","White","Not Hispanic or Latino",-97,2,7.3
+"TN02","TN02_9035402",10.7342465753425,"F","White","Not Hispanic or Latino",-98,1,6
+"TN02","TN02_9093772",40.7671232876712,"F","White","Not Hispanic or Latino",-48,3,8.5
+"TN02","TN02_9024813",32.7917808219178,"F","White","Not Hispanic or Latino",-62,1,10.7
+"TN02","TN02_9039335",44.5068493150685,"M","Unknown or Not Reported","Not Hispanic or Latino",-97,6,6.7
+"TN05","TN05_9006024",21.4438356164384,"M","White","Not Hispanic or Latino",NA,3,NA
+"TN05","TN05_9009405",23.7561643835616,"M","White","Not Hispanic or Latino",NA,3,NA
+"TN05","TN05_9010167",13.6109589041096,"M","White","Not Hispanic or Latino",NA,6,NA
+"TN05","TN05_9014572",38.1890410958904,"F","White","Not Hispanic or Latino",NA,4,NA
+"TN05","TN05_9023796",26.972602739726,"M","White","Not Hispanic or Latino",NA,6,NA
+"TN05","TN05_9025834",12.4876712328767,"M","White","Not Hispanic or Latino",NA,4,NA
+"TN05","TN05_9026667",14.1315068493151,"M","White","Not Hispanic or Latino",NA,1,NA
+"TN05","TN05_9031738",16.0027397260274,"M","White","Hispanic or Latino",NA,1,NA
+"TN05","TN05_9032923",16.6356164383562,"F","White","Not Hispanic or Latino",NA,3,NA
+"TN05","TN05_9044850",13.3972602739726,"M","White","Not Hispanic or Latino",NA,2,NA
+"TN05","TN05_9045381",34.7397260273973,"F","White","Not Hispanic or Latino",NA,2,NA
+"TN05","TN05_9066662",14,"M","White","Not Hispanic or Latino",NA,5,NA
+"TN05","TN05_9072116",18.7917808219178,"F","White","Not Hispanic or Latino",NA,4,NA
+"TN05","TN05_9075694",14.3972602739726,"M","White","Not Hispanic or Latino",NA,5,NA
+"TN05","TN05_9081664",29.1671232876712,"F","White","Not Hispanic or Latino",NA,6,NA
+"TN05","TN05_9089953",38.5972602739726,"F","White","Not Hispanic or Latino",NA,2,NA
+"TN05","TN05_9096837",16.586301369863,"M","White","Not Hispanic or Latino",NA,6,NA
+"TN09","TN09_9009983",18.8082191780822,"M","White","Not Hispanic or Latino",-63,3,6.2
+"TN09","TN09_9043244",17.2958904109589,"M","White","Not Hispanic or Latino",-99,NA,6.6
+"TN09","TN09_9099432",12.9369863013699,"F","White","Not Hispanic or Latino",-47,3,7.4
+"TN09","TN09_9004933",12.9123287671233,"F","White","Not Hispanic or Latino",-51,1,9.1
+"TN09","TN09_9065335",8.99178082191781,"M","White","Not Hispanic or Latino",-97,6,6.8
+"TN09","TN09_9045965",10.1917808219178,"M","White","Not Hispanic or Latino",-80,6,6.6
+"TN09","TN09_9015041",8.49041095890411,"M","White","Not Hispanic or Latino",-93,2,7.5
+"TN09","TN09_9098612",11.2328767123288,"F","White","Not Hispanic or Latino",-78,2,6.5
+"TN09","TN09_9086478",15.3232876712329,"M","White; Other","Hispanic or Latino",-43,3,7.7
+"TN09","TN09_9022468",15.9287671232877,"F","White","Not Hispanic or Latino",-85,2,5.9
+"TN09","TN09_9000192",15.0684931506849,"F","White","Not Hispanic or Latino",-80,6,6.5
+"TN09","TN09_9001125",15.4438356164384,"M","White","Not Hispanic or Latino",-100,6,7.2
+"TN09","TN09_9081868",9.23287671232877,"M","White","Not Hispanic or Latino",-92,6,6.3
+"TN09","TN09_9029938",9.04109589041096,"F","White","Not Hispanic or Latino",-94,1,6.6
+"TN09","TN09_9040341",9.01643835616438,"M","Black or African American","Not Hispanic or Latino",-70,4,7.7
+"TN09","TN09_9089197",17.9342465753425,"F","White","Not Hispanic or Latino",-91,6,6
+"TN09","TN09_9053436",20.7561643835616,"F","White","Not Hispanic or Latino",-98,NA,7.2
+"TN09","TN09_9003145",10.8602739726027,"M","White","Not Hispanic or Latino",-90,6,4.9
+"TN09","TN09_9021857",25.1643835616438,"M","Other","Hispanic or Latino",-89,1,7.7
+"TN09","TN09_9085527",16.0767123287671,"M","White","Not Hispanic or Latino",-106,6,6.5
+"TN09","TN09_9081360",14.4821917808219,"F","White","Not Hispanic or Latino",-79,3,5.6
+"TN09","TN09_9043569",14.3315068493151,"M","White","Hispanic or Latino",-98,3,5.8
+"TN09","TN09_9043661",12.2438356164384,"M","White","Not Hispanic or Latino",-66,3,8.2
+"TN09","TN09_9010400",14.9890410958904,"F","White","Not Hispanic or Latino",-79,6,7.8
+"TN09","TN09_9075373",16.5315068493151,"M","White","Not Hispanic or Latino",-84,2,7
+"TN09","TN09_9008090",12.7205479452055,"M","White","Not Hispanic or Latino",-107,6,6.9
+"TN09","TN09_9033420",15.9287671232877,"M","White","Not Hispanic or Latino",-98,6,6.4
+"TN09","TN09_9088780",13.9342465753425,"M","White","Hispanic or Latino",-78,6,6.4
+"TN09","TN09_9006235",8.66849315068493,"M","White","Not Hispanic or Latino",-88,6,8.6
+"TN09","TN09_9025127",9.32602739726027,"M","White","Not Hispanic or Latino",-100,6,7.2
+"TN09","TN09_9025230",14.4794520547945,"M","White","Not Hispanic or Latino",-99,3,6.1
+"TN09","TN09_9023648",11.172602739726,"M","White","Not Hispanic or Latino",-98,6,5.9
+"TN09","TN09_9009711",34.2712328767123,"M","White","Not Hispanic or Latino",-80,3,4.9
+"TN09","TN09_9070242",17.8821917808219,"M","White","Not Hispanic or Latino",-81,6,5.7
