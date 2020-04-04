@@ -1,11 +1,12 @@
-## scripts to analyze cell blood count (CBC) data for the T1D placebos project
+##### scripts for analysis of data for Dufort et al. 2019. Cell type–specific immune phenotypes predict loss of insulin secretion in new-onset type 1 diabetes. (DOI: 10.1172/jci.insight.125556)
+### this file includes scripts for analyses of complete blood count (CBC) data
 
 ##### set up environment: load packages #####
 
 # load general packages
-library(xlsx)
+library(readxl)
 library(colorspace)
-library(RColorBrewer) 
+library(RColorBrewer)
 library(tidyverse)
 theme_set(
   theme_bw(20) +
@@ -22,12 +23,12 @@ library(magrittr)
 library(edgeR)
 library(limma)
 library(gdata)
-library(corrMatrix)
+# library(corrMatrix)
 library(lmerTest)
 
 # load my relevant functions
-library(countSubsetNorm)
-library(miscHelpers)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
 
 
 ##### load/save data from previous scripts #####
@@ -37,124 +38,140 @@ load(file="T1D_placebos_data_1_for_downstream_analyses.RData")
 
 ##### match merged CBC data to RNAseq and C-peptide data #####
 
-shared_cols.tmp <- intersect(colnames(master), colnames(cbc.merged))
-master.cbc.merged <-
-  base::merge(
-    master, cbc.merged, all=TRUE,
-    by=c("cbc_visit_id", "cbc_visit_date"))
-glimpse(master.cbc.merged)
+shared_cols.tmp <- intersect(colnames(master), colnames(cbc_data))
 
-# fill in data where missing in one shared column
-for (i in grep("\\.x", colnames(master.cbc.merged), value=TRUE)) {
-  master.cbc.merged[is.na(master.cbc.merged[[i]]), i] <-
-    master.cbc.merged[is.na(master.cbc.merged[[i]]), str_replace(i, "\\.x", ".y")]
+## pull cbc_visit_number into master so that I can merge them
+
+## use details of study to pull data into master
+for (i in c("study_visit_number", "study_visit_name", "weeks",
+            "cbc_visit_number", "cbc_visit_name")) {
+  master[[i]] <- NA
+  class(master[[i]]) <- class(study_schedules[[i]])
+  for (j in 1:nrow(master)) {
+    if (!is.na(master$rnaseq_visit_number[j])) {
+      master[[i]][j] <-
+        study_schedules[[i]][
+          (study_schedules$study==master$study[j]) &
+            (study_schedules$rnaseq_visit_number==master$rnaseq_visit_number[j])]
+    } else if (!is.na(master$cpeptide_visit_number[j])) {
+      study_schedules.tmp <-
+        study_schedules[
+          (study_schedules$study==master$study[j]) &
+            (study_schedules$cpeptide_visit_number==master$cpeptide_visit_number[j]),]
+      if (nrow(study_schedules.tmp)==1) {
+        master[[i]][j] <-
+          study_schedules.tmp[[i]][1]
+      } else if (nrow(study_schedules.tmp) == 2) {
+        master[[i]][j] <-
+          study_schedules.tmp[[i]][2]
+      }
+    }
+  }
 }
+rm_tmp(ask=FALSE)
 
-# drop and rename shared columns
-master.cbc.merged <-
-  master.cbc.merged[, !str_detect(colnames(master.cbc.merged), "\\.y")]
-colnames(master.cbc.merged) <-
-  colnames(master.cbc.merged) %>%
-  str_replace("\\.x", "")
+## add cbc_visit_id to all rows
+master$cbc_visit_id <-
+  ifelse(is.na(master$cbc_visit_number), NA,
+         with(master,
+              paste(participant_id, cbc_visit_number, sep="_")))
+any(duplicated(master$cbc_visit_id)) # no duplicates
+
+
+## merge master and cbc_data
+master_cbc_merged <-
+  full_join(master, cbc_data)
+glimpse(master_cbc_merged)
 
 ## fill in weeks from cbc_visit_number
-master.cbc.merged <-
-  master.cbc.merged %>%
+master_cbc_merged <-
+  master_cbc_merged %>%
   arrange(participant_id, cbc_visit_number)
 
 # fill in the NAs where possible, based on cbc_visit_number
-master.cbc.merged[is.na(master.cbc.merged$weeks), "weeks"] <-
-  (merge(study_schedules, master.cbc.merged[is.na(master.cbc.merged$weeks),],
+master_cbc_merged[is.na(master_cbc_merged$weeks), "weeks"] <-
+  (merge(study_schedules, master_cbc_merged[is.na(master_cbc_merged$weeks),],
          all.y=TRUE, by=c("study", "cbc_visit_number"),
          sort=FALSE) %>% arrange(participant_id, cbc_visit_number))[,"weeks.x"]
 
 ## #fill in cbc_baseline_visit from cbc_visit_number
 
 # fill in the NAs where possible, based on cbc_visit_number
-master.cbc.merged[
-  is.na(master.cbc.merged$cbc_baseline_visit), "cbc_baseline_visit"] <-
+master_cbc_merged[
+  is.na(master_cbc_merged$cbc_baseline_visit), "cbc_baseline_visit"] <-
   with(
-    master.cbc.merged[is.na(master.cbc.merged$cbc_baseline_visit),],
+    master_cbc_merged[is.na(master_cbc_merged$cbc_baseline_visit),],
     ((study %in% c("ABATE", "START", "T1DAL", "TN09") & cbc_visit_number==0) |
        (study %in% c("TN02", "TN05") & cbc_visit_number==2)))
 
 # fill in neutrophil and lymphocyte baseline values and difference (in log) from baseline
-master.cbc.merged$neutrophils_abs.baseline <- 
-  master.cbc.merged$neutrophils_abs.logdiff <- 
-  master.cbc.merged$lymphocytes_abs.baseline <-
-  master.cbc.merged$lymphocytes_abs.logdiff <-
+master_cbc_merged$neutrophils_abs.baseline <-
+  master_cbc_merged$neutrophils_abs.logdiff <-
+  master_cbc_merged$lymphocytes_abs.baseline <-
+  master_cbc_merged$lymphocytes_abs.logdiff <-
   as.numeric(NA)
-for (i in unique(master.cbc.merged$participant_id)) {
+for (i in unique(master_cbc_merged$participant_id)) {
   data.tmp <-
-    master.cbc.merged[
-      with(master.cbc.merged,
+    master_cbc_merged[
+      with(master_cbc_merged,
            (participant_id %in% i) & cbc_baseline_visit),
       c("neutrophils_abs", "lymphocytes_abs")]
   if (nrow(data.tmp) == 1) {
-    master.cbc.merged[
-      master.cbc.merged$participant_id == i,
+    master_cbc_merged[
+      master_cbc_merged$participant_id == i,
       c("neutrophils_abs.baseline", "lymphocytes_abs.baseline")] <-
       data.tmp[,c("neutrophils_abs", "lymphocytes_abs")]
   } else if (nrow(data.tmp) > 1 &
              nrow(unique(data.tmp[c("neutrophils_abs", "lymphocytes_abs")])) == 1) {
     (cat(nrow(data.tmp), "baseline rows detected for patient", i, "with identical data\n"))
-    master.cbc.merged[
-      master.cbc.merged$participant_id == i,
+    master_cbc_merged[
+      master_cbc_merged$participant_id == i,
       c("neutrophils_abs.baseline", "lymphocytes_abs.baseline")] <-
       data.tmp[1,c("neutrophils_abs", "lymphocytes_abs")]
   } else (cat(nrow(data.tmp), "baseline rows detected for patient", i, "\n"))
 }
 
-master.cbc.merged[,c("neutrophils_abs.logdiff", "lymphocytes_abs.logdiff")] <-
-  master.cbc.merged[,c("neutrophils_abs", "lymphocytes_abs")] -
-  master.cbc.merged[,c("neutrophils_abs.baseline", "lymphocytes_abs.baseline")]
+master_cbc_merged[,c("neutrophils_abs.logdiff", "lymphocytes_abs.logdiff")] <-
+  master_cbc_merged[,c("neutrophils_abs", "lymphocytes_abs")] -
+  master_cbc_merged[,c("neutrophils_abs.baseline", "lymphocytes_abs.baseline")]
 
 # fill in age, progressor status, and C-peptide rates (because they don't vary with time)
-cols.tmp <- grep("progressor|linear|age(?!s)", colnames(master.cbc.merged), value=TRUE, perl=TRUE)
-for (i in unique(master.cbc.merged$participant_id)) {
+cols.tmp <- grep("progressor|linear|age(?!s)", colnames(master_cbc_merged), value=TRUE, perl=TRUE)
+for (i in unique(master_cbc_merged$participant_id)) {
   for (j in cols.tmp) {
     data.tmp <-
-      unique(na.omit(master.cbc.merged[master.cbc.merged$participant_id==i, j]))
+      unique(na.omit(master_cbc_merged[master_cbc_merged$participant_id==i, j]))
     if (length(data.tmp) > 1) {
       if (length(unique(round(data.tmp, 3))) == 1) {
         cat("Found multiple unique values for ", j, " in Patient ", i, ", resolved by rounding.\n", sep="")
-        master.cbc.merged[master.cbc.merged$participant_id==i, j] <- unique(round(data.tmp, 3))
+        master_cbc_merged[master_cbc_merged$participant_id==i, j] <- unique(round(data.tmp, 3))
       } else if (length(unique(round(data.tmp, 2))) == 1) {
         cat("Found multiple unique values for ", j, " in Patient ", i, ", resolved by rounding.\n", sep="")
-        master.cbc.merged[master.cbc.merged$participant_id==i, j] <- unique(round(data.tmp, 2))
-        
+        master_cbc_merged[master_cbc_merged$participant_id==i, j] <- unique(round(data.tmp, 2))
+
       } else cat("Found multiple unique values for ", j, " in Patient ", i, ", not resolved by rounding.\n", sep="")
     } else if (length(data.tmp) == 0) {
       # cat("Found no non-NA values for ", j, " in Patient ", i, ".\n", sep="")
     } else {
-      master.cbc.merged[master.cbc.merged$participant_id==i, j] <- data.tmp
+      master_cbc_merged[master_cbc_merged$participant_id==i, j] <- data.tmp
     }
   }
 }
 
 ### scale time variables for better model fitting
-## these are all scaled by the comparable scales used in cpeptide model fitting so that they're comparable
+## these are all scaled by the same values used in cpeptide model fitting so that they're comparable
 for (var.tmp in
      grep("^(cpeptide|cbc|rnaseq)_(study|diagnosis)_day$",
-          colnames(master.cbc.merged), value=TRUE)) {
+          colnames(master_cbc_merged), value=TRUE)) {
   sd.tmp <- switch(str_extract(var.tmp, "day"),
                    weeks=weeks.sd,
                    day=days.sd)
-  master.cbc.merged[[paste0(var.tmp, "_scaled")]] <-
-    scale(master.cbc.merged[[var.tmp]], center=FALSE,
+  master_cbc_merged[[paste0(var.tmp, "_scaled")]] <-
+    scale(master_cbc_merged[[var.tmp]], center=FALSE,
           scale=sd.tmp)[,1]
 }
 
 rm_tmp(ask=FALSE)
-
-
-##### check overlap in data types (RNAseq, CBCs, C-peptide AUC) #####
-
-# counts of RNAseq data by study and timepoint
-table(master.final[!is.na(master.final$libid),c("study","weeks")])
-
-# counts of C-peptide AUC + RNAseq data by study and timepoint
-table(master[!is.na(master$libid),c("study","weeks")])
 
 
 ##### fit model of percent neutrophils to fast/slow progressor status #####
@@ -164,7 +181,8 @@ lmer.perc_neutrophils.cbc_study_day.progressor_split_cpep_rate_fast25_slow75 <-
   lmer(
     neutrophils ~
       cbc_study_day + progressor_split_cpep_rate_fast25_slow75 + (1|participant_id),
-    data=master.cbc.merged[!duplicated(master.cbc.merged$cbc_visit_id_date),])
+    data=
+      master_cbc_merged[!duplicated(master_cbc_merged$cbc_visit_id),])
 summary(lmer.perc_neutrophils.cbc_study_day.progressor_split_cpep_rate_fast25_slow75)
 
 ## neutrophil percent by cbc_study_day and progressor status, with interaction
@@ -172,7 +190,7 @@ lmer.perc_neutrophils.cbc_study_day.progressor_split_cpep_rate_fast25_slow75.inc
   lmer(
     neutrophils ~
       cbc_study_day * progressor_split_cpep_rate_fast25_slow75 + (1|participant_id),
-    data=master.cbc.merged[!duplicated(master.cbc.merged$cbc_visit_id_date),])
+    data=master_cbc_merged[!duplicated(master_cbc_merged$cbc_visit_id),])
 summary(lmer.perc_neutrophils.cbc_study_day.progressor_split_cpep_rate_fast25_slow75.inc_interaction)
 
 
@@ -181,10 +199,10 @@ summary(lmer.perc_neutrophils.cbc_study_day.progressor_split_cpep_rate_fast25_sl
 pdf("Fig_3A.pdf", w=10,h=6)
 ggplot(
   data=
-    master.cbc.merged[
-      !duplicated(master.cbc.merged$cbc_visit_id_date) &
-        !is.na(master.cbc.merged$progressor_split_cpep_rate_fast25_slow75) &
-        !is.na(master.cbc.merged$neutrophils),] %>%
+    master_cbc_merged[
+      !duplicated(master_cbc_merged$cbc_visit_id) &
+        !is.na(master_cbc_merged$progressor_split_cpep_rate_fast25_slow75) &
+        !is.na(master_cbc_merged$neutrophils),] %>%
     cbind(
       neutrophils_predicted =
         predict(lmer.perc_neutrophils.cbc_study_day.progressor_split_cpep_rate_fast25_slow75)),
@@ -214,7 +232,7 @@ lmer.perc_lymphocytes.cbc_study_day.progressor_split_cpep_rate_fast25_slow75 <-
   lmer(
     lymphocytes ~
       cbc_study_day + progressor_split_cpep_rate_fast25_slow75 + (1|participant_id),
-    data=master.cbc.merged[!duplicated(master.cbc.merged$cbc_visit_id_date),])
+    data=master_cbc_merged[!duplicated(master_cbc_merged$cbc_visit_id),])
 summary(lmer.perc_lymphocytes.cbc_study_day.progressor_split_cpep_rate_fast25_slow75)
 
 ## neutrophil percent by cbc_study_day and progressor status, with interaction
@@ -222,7 +240,7 @@ lmer.perc_lymphocytes.cbc_study_day.progressor_split_cpep_rate_fast25_slow75.inc
   lmer(
     lymphocytes ~
       cbc_study_day * progressor_split_cpep_rate_fast25_slow75 + (1|participant_id),
-    data=master.cbc.merged[!duplicated(master.cbc.merged$cbc_visit_id_date),])
+    data=master_cbc_merged[!duplicated(master_cbc_merged$cbc_visit_id),])
 summary(lmer.perc_lymphocytes.cbc_study_day.progressor_split_cpep_rate_fast25_slow75.inc_interaction)
 
 
@@ -231,10 +249,10 @@ summary(lmer.perc_lymphocytes.cbc_study_day.progressor_split_cpep_rate_fast25_sl
 pdf("Fig_S9A.pdf", w=10, h=6)
 ggplot(
   data=
-    master.cbc.merged[
-      !duplicated(master.cbc.merged$cbc_visit_id_date) &
-        !is.na(master.cbc.merged$progressor_split_cpep_rate_fast25_slow75) &
-        !is.na(master.cbc.merged$lymphocytes),] %>%
+    master_cbc_merged[
+      !duplicated(master_cbc_merged$cbc_visit_id) &
+        !is.na(master_cbc_merged$progressor_split_cpep_rate_fast25_slow75) &
+        !is.na(master_cbc_merged$lymphocytes),] %>%
     cbind(
       lymphocytes_predicted =
         predict(lmer.perc_lymphocytes.cbc_study_day.progressor_split_cpep_rate_fast25_slow75)),
@@ -264,7 +282,7 @@ lmer.lymphocytes_neutrophils_ratio.cbc_study_day.progressor_split_cpep_rate_fast
   lmer(
     lymphocytes_neutrophils_ratio ~
       cbc_study_day + progressor_split_cpep_rate_fast25_slow75 + (1|participant_id),
-    data=master.cbc.merged[!duplicated(master.cbc.merged$cbc_visit_id_date),])
+    data=master_cbc_merged[!duplicated(master_cbc_merged$cbc_visit_id),])
 summary(lmer.lymphocytes_neutrophils_ratio.cbc_study_day.progressor_split_cpep_rate_fast25_slow75)
 
 ## lymphocytes_neutrophils_ratio by cbc_study_day and progressor status
@@ -272,17 +290,17 @@ lmer.lymphocytes_neutrophils_ratio.cbc_study_day.progressor_split_cpep_rate_fast
   lmer(
     lymphocytes_neutrophils_ratio ~
       cbc_study_day * progressor_split_cpep_rate_fast25_slow75 + (1|participant_id),
-    data=master.cbc.merged[!duplicated(master.cbc.merged$cbc_visit_id_date),])
+    data=master_cbc_merged[!duplicated(master_cbc_merged$cbc_visit_id),])
 summary(lmer.lymphocytes_neutrophils_ratio.cbc_study_day.progressor_split_cpep_rate_fast25_slow75.inc_interaction)
 
 
 ##### plot lymphocyte-to-neutrophil ratio over time by fast/slow progressor status #####
 
 data.tmp <-
-  master.cbc.merged[
-    !duplicated(master.cbc.merged$cbc_visit_id_date) &
-      !is.na(master.cbc.merged$progressor_split_cpep_rate_fast25_slow75) &
-      !is.na(master.cbc.merged$lymphocytes_neutrophils_ratio),] %>%
+  master_cbc_merged[
+    !duplicated(master_cbc_merged$cbc_visit_id) &
+      !is.na(master_cbc_merged$progressor_split_cpep_rate_fast25_slow75) &
+      !is.na(master_cbc_merged$lymphocytes_neutrophils_ratio),] %>%
   cbind(
     lymphocytes_neutrophils_ratio_predicted =
       predict(lmer.lymphocytes_neutrophils_ratio.cbc_study_day.progressor_split_cpep_rate_fast25_slow75))
@@ -290,10 +308,10 @@ data.tmp <-
 pdf("Fig_S9B.pdf", w=10, h=6)
 ggplot(
   data=
-    master.cbc.merged[
-      !duplicated(master.cbc.merged$cbc_visit_id_date) &
-        !is.na(master.cbc.merged$progressor_split_cpep_rate_fast25_slow75) &
-        !is.na(master.cbc.merged$lymphocytes_neutrophils_ratio),] %>%
+    master_cbc_merged[
+      !duplicated(master_cbc_merged$cbc_visit_id) &
+        !is.na(master_cbc_merged$progressor_split_cpep_rate_fast25_slow75) &
+        !is.na(master_cbc_merged$lymphocytes_neutrophils_ratio),] %>%
     cbind(
       lymphocytes_neutrophils_ratio_predicted =
         predict(lmer.lymphocytes_neutrophils_ratio.cbc_study_day.progressor_split_cpep_rate_fast25_slow75)),
@@ -316,10 +334,10 @@ ggplot(
 dev.off()
 
 
-##### remove excess time columns from master.cbc.merged #####
+##### remove excess time columns from master_cbc_merged #####
 
-master.cbc.merged <-
-  master.cbc.merged[,!str_detect(colnames(master.cbc.merged), "scaled_")]
+master_cbc_merged <-
+  master_cbc_merged[,!str_detect(colnames(master_cbc_merged), "scaled_")]
 
 
 ##### combine cell subset models into a single object for easier storage #####
@@ -330,21 +348,21 @@ for (i in ls_grep("^lm")) cbc_models.all[[i]] <- get(i)
 rm_tmp(ask=FALSE)
 
 
-##### filter and transform counts object and master.cbc.merged object #####
+##### filter and transform counts object and master_cbc_merged object #####
 
 counts.filtered_cbcs <-
   calc_norm_counts(
-    counts=counts.final, design=master.cbc.merged, libID_col="libid",
+    counts=counts.final, design=master_cbc_merged, libID_col="libid",
     min_cpm=0, min_libs_perc = 0,
     normalize=FALSE,
     return_DGEcounts=FALSE)
-master.cbc.merged.filtered_cbcs <-
-  master.cbc.merged[match(colnames(counts.filtered_cbcs), master.cbc.merged$libid),]
+master_cbc_merged.filtered_cbcs <-
+  master_cbc_merged[match(colnames(counts.filtered_cbcs), master_cbc_merged$libid),]
 
 
 ##### save objects for downstream use #####
 
 save(file="T1D_placebos_data_2_for_downstream_analyses.RData",
      list=c(
-       "master.cbc.merged", "master.cbc.merged.filtered_cbcs", "counts.filtered_cbcs",
-       "counts.final", "auc2hr_models.all", "cbc_models.all", "vwts.all"))
+       "master_cbc_merged", "master_cbc_merged.filtered_cbcs", "counts.filtered_cbcs",
+       "counts.final", "cbc_models.all", "vwts.all"))
