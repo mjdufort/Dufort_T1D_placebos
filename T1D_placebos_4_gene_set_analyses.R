@@ -1,12 +1,10 @@
-## scripts to run gene set analyses on T1D placebos project
+##### scripts for analysis of data for Dufort et al. 2019. Cell type–specific immune phenotypes predict loss of insulin secretion in new-onset type 1 diabetes. (DOI: 10.1172/jci.insight.125556)
+### this file includes scripts for analyses of the RNA-seq data using gene sets
 
 ##### set up environment: load packages #####
 
 # load general packages
-library(xlsx)
 library(tidyverse)
-library(colorspace)
-library(RColorBrewer) 
 library(magrittr)
 
 theme_set(
@@ -26,11 +24,11 @@ library(ordinal)
 library(gdata) # needed for loading .xls data
 library(lmerTest)
 
-# load my packages of helper functions
-library(geneSetTools)
-library(miscHelpers)
-library(countSubsetNorm)
-library(limmaTools)
+# load custom packages (available at github.com/benaroyaresearch)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/limmaTools"); library(limmaTools)
 
 
 ##### load/save data from previous scripts #####
@@ -53,7 +51,7 @@ for (i in unique(master.final$participant_id)) {
     master.final[
       master.final$participant_id==i & master.final$rnaseq_baseline_visit,
       median_gene_set_cols.tmp]
-  
+
   if (nrow(baselines.tmp) == 1)
     master.final[
       master.final$participant_id==i,
@@ -131,7 +129,7 @@ summary(lm.median_MPO.mod.removed_study_rna_batch_vs_log_age_years) # p=0.19
 # for CXCR1.mod
 pdf("Fig_S7A.pdf", w=7, h=6)
 ggplot(
-  master.cbc.merged,
+  master_cbc_merged,
   mapping=aes(x=median_CXCR1.mod.removed_study_rna_batch, y=neutrophils)) +
   geom_point(size=2)+
   geom_smooth(method="lm", linetype="dashed", color="black", se=FALSE) +
@@ -142,7 +140,7 @@ dev.off()
 # for MPO.mod
 pdf("Fig_S7A.pdf", w=7, h=6)
 ggplot(
-  master.cbc.merged,
+  master_cbc_merged,
   mapping=aes(x=median_MPO.mod.removed_study_rna_batch, y=neutrophils)) +
   geom_point(size=2)+
   geom_smooth(method="lm", linetype="dashed", color="black", se=FALSE) +
@@ -151,12 +149,12 @@ ggplot(
 dev.off()
 
 # correlations between neutrophil percent from CBC, and neutrophil module expression from RNAseq
-cor.test(master.cbc.merged$neutrophils,
-         master.cbc.merged$median_CXCR1.mod.removed_study_rna_batch,
+cor.test(master_cbc_merged$neutrophils,
+         master_cbc_merged$median_CXCR1.mod.removed_study_rna_batch,
          method="pearson")
 
-cor.test(master.cbc.merged$neutrophils,
-         master.cbc.merged$median_MPO.mod.removed_study_rna_batch,
+cor.test(master_cbc_merged$neutrophils,
+         master_cbc_merged$median_MPO.mod.removed_study_rna_batch,
          method="pearson")
 
 

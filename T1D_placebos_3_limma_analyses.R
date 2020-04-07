@@ -1,10 +1,9 @@
-## scripts to run limma analysis on the T1D placebos project
+##### scripts for analysis of data for Dufort et al. 2019. Cell type–specific immune phenotypes predict loss of insulin secretion in new-onset type 1 diabetes. (DOI: 10.1172/jci.insight.125556)
+### this file includes scripts for differential expression analyses of individual genes using the limma package
 
 ##### set up environment: load packages #####
 
 # load general packages
-library(colorspace)
-library(RColorBrewer) 
 library(tidyverse)
 library(magrittr)
 theme_set(
@@ -22,12 +21,12 @@ library(ordinal)
 library(edgeR)
 library(limma)
 
-# load my relevant functions
-library(countSubsetNorm)
-library(RNAseQC)
-library(limmaTools)
-library(miscHelpers)
-library(geneSetTools)
+# load custom packages (available at github.com/benaroyaresearch)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/RNAseQC"); library(RNAseQC)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/limmaTools"); library(limmaTools)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
+if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
 
 
 ##### load/save data from previous scripts #####
@@ -54,7 +53,7 @@ master.age_years <-
 
 DesignMat.age_years <-
   model.matrix(
-    ~ age_years + sex_by_rna + study_rna_batch,
+    ~ age_years + sex + study_rna_batch,
     data=master.age_years)
 vwts.age_years <-
   voomWithQualityWeights(
@@ -130,7 +129,7 @@ master.cpeptide_slope <-
 DesignMat.cpeptide_slope <-
   model.matrix(
     ~ log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept +
-      sex_by_rna + study_rna_batch,
+      sex + study_rna_batch,
     data=master.cpeptide_slope)
 vwts.cpeptide_slope <-
   voomWithQualityWeights(
@@ -208,7 +207,7 @@ plot_volcano_byvar_2var(
 
 DesignMat.cpeptide_slope.age_years <-
   model.matrix(
-    ~ log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept + sex_by_rna +
+    ~ log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept + sex +
       study_rna_batch + age_years,
     data=master.cpeptide_slope) %>%
   drop.coef()
@@ -265,11 +264,11 @@ plot_volcano_byvar_2var(
 
 condition.tmp <-
   with(
-    master.cbc.merged.filtered_cbcs,
+    master_cbc_merged.filtered_cbcs,
     !is.na(log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept) &
       !is.na(neutrophils) & !is.na(lymphocytes))
 master.cpeptide_slope.neutrophils_lymphocytes <-
-  master.cbc.merged.filtered_cbcs %>%
+  master_cbc_merged.filtered_cbcs %>%
   filter(condition.tmp) %>%
   fix_factors()
 DGECounts.cpeptide_slope.neutrophils_lymphocytes.tmp <-
@@ -289,7 +288,7 @@ master.cpeptide_slope.neutrophils_lymphocytes <-
 DesignMat.cpeptide_slope.neutrophils_lymphocytes <-
   model.matrix(
     ~ log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept +
-      neutrophils + lymphocytes + sex_by_rna + study_rna_batch,
+      neutrophils + lymphocytes + sex + study_rna_batch,
     data=master.cpeptide_slope.neutrophils_lymphocytes)
 vwts.cpeptide_slope.neutrophils_lymphocytes <-
   voomWithQualityWeights(
@@ -369,7 +368,7 @@ DesignMat.cpeptide_slope.age_years.interaction <-
   model.matrix(
     ~ log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept + age_years +
       log_auc2hr_slope_cpeptide_study_day_linear_random_with_intercept:age_years +
-      sex_by_rna + study_rna_batch,
+      sex + study_rna_batch,
     data=master.cpeptide_slope.age_years.interaction)
 vwts.cpeptide_slope.age_years.interaction <-
   voomWithQualityWeights(
@@ -411,13 +410,13 @@ goana.cpeptide_slope.age_years.interaction.P0.05 <-
 goana.cpeptide_slope.age_years.interaction.P0.05 %>%
   arrange(P.Up) %>%
   write.table(
-    "networks_and_functional_term_enrichment/cpeptide_slope.age_years.interaction.genes_P0.05.up.goana_results.txt",
+    "cpeptide_slope.age_years.interaction.genes_P0.05.up.goana_results.txt",
     row.names=FALSE, quote=FALSE,
     sep="\t")
 goana.cpeptide_slope.age_years.interaction.P0.05 %>%
   arrange(P.Down) %>%
   write.table(
-    "networks_and_functional_term_enrichment/cpeptide_slope.age_years.interaction.genes_P0.05.down.goana_results.txt",
+    "cpeptide_slope.age_years.interaction.genes_P0.05.down.goana_results.txt",
     row.names=FALSE, quote=FALSE,
     sep="\t")
 
