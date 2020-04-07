@@ -60,6 +60,7 @@ patient_data <- read.csv("T1D_placebos_patient_data.csv")
 
 ## CBC data
 cbc_data <- read.csv("T1D_placebos_cbc_data_processed_merged.csv")
+# CBC data have already had absolute numbers log-transformed and percentages arcsin-square-root transformed
 
 ## C-peptide data
 cpeptide_data <- read.csv("T1D_placebos_cpeptide_data_processed_merged.csv")
@@ -1378,4 +1379,5 @@ save(file="T1D_placebos_data_1_for_downstream_analyses.RData",
        "rnaseq_annotation",
        "counts.final", "vwts.all", "vwts.all.removed_study_rna_batch",
        "master", "master.final",
-       "gene_sets.Linsley"))
+       "gene_sets.Linsley",
+       "ng_ml_to_nmol_l_min", "low_lim_detect"))
