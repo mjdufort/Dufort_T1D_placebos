@@ -25,10 +25,10 @@ library(gdata) # needed for loading .xls data
 library(lmerTest)
 
 # load custom packages (available at github.com/benaroyaresearch)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/limmaTools"); library(limmaTools)
+if (!require(geneSetTools)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
+if (!require(miscHelpers)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
+if (!require(countSubsetNorm)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(limmaTools)) remotes::install_github("benaroyaresearch/limmaTools"); library(limmaTools)
 
 
 ##### load/save data from previous scripts #####

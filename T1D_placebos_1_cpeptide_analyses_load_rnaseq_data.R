@@ -29,9 +29,9 @@ library(lme4)
 
 # load custom packages (available at github.com/benaroyaresearch)
 if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/RNAseQC"); library(RNAseQC)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
+if (!require(countSubsetNorm)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(miscHelpers)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
+if (!require(geneSetTools)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
 
 
 ##### import detailed study schedules, with visit numbers, names, corrected weeks, etc. #####

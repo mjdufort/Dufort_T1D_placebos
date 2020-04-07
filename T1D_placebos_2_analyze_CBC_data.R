@@ -26,9 +26,9 @@ library(gdata)
 # library(corrMatrix)
 library(lmerTest)
 
-# load my relevant functions
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
+# load custom packages (available at github.com/benaroyaresearch)
+if (!require(countSubsetNorm)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(miscHelpers)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
 
 
 ##### load/save data from previous scripts #####

@@ -22,11 +22,11 @@ library(edgeR)
 library(limma)
 
 # load custom packages (available at github.com/benaroyaresearch)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
+if (!require(countSubsetNorm)) remotes::install_github("benaroyaresearch/countSubsetNorm"); library(countSubsetNorm)
 if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/RNAseQC"); library(RNAseQC)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/limmaTools"); library(limmaTools)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
-if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
+if (!require(limmaTools)) remotes::install_github("benaroyaresearch/limmaTools"); library(limmaTools)
+if (!require(miscHelpers)) remotes::install_github("benaroyaresearch/miscHelpers"); library(miscHelpers)
+if (!require(geneSetTools)) remotes::install_github("benaroyaresearch/geneSetTools"); library(geneSetTools)
 
 
 ##### load/save data from previous scripts #####
