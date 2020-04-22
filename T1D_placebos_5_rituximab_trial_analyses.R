@@ -23,12 +23,6 @@ library(annotables)
 library(datamart)
 library(ordinal)
 
-# load useful functions
-library(RNAseQC)
-library(countSubsetNorm)
-library(miscHelpers)
-library(geneSetTools)
-library(limmaTools)
 
 # load custom packages (available at github.com/benaroyaresearch)
 if (!require(RNAseQC)) remotes::install_github("benaroyaresearch/RNAseQC"); library(RNAseQC)
